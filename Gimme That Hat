@@ -1,4 +1,3 @@
-type protectUI = (() -> GuiObject) -> GuiObject
 local function ClonedService(name)
 	local Service = (game.GetService)
 	local Reference = (cloneref) or function(reference)
@@ -14,6 +13,47 @@ for i, v in pairs(ClonedService("Players").LocalPlayer.Character:GetDescendants(
 end;
 task.wait()
 local plr = ClonedService("Players").LocalPlayer;
+local function protectUI(sGui)
+	if sGui:IsA("ScreenGui") then
+		sGui.ZIndexBehavior = Enum.ZIndexBehavior.Global;
+		sGui.DisplayOrder = 999999999;
+		sGui.ResetOnSpawn = false;
+		sGui.IgnoreGuiInset = true
+	end;
+	local cGUI = ClonedService("CoreGui")
+	local lPlr = ClonedService("Players").LocalPlayer;
+	local function NAProtection(inst, var)
+		if inst then
+			if var then
+				inst[var] = "\0"
+				inst.Archivable = false
+			else
+				inst.Name = "\0"
+				inst.Archivable = false
+			end
+		end
+	end;
+	if gethui then
+		NAProtection(sGui)
+		sGui.Parent = gethui()
+		return sGui
+	elseif cGUI and cGUI:FindFirstChild("RobloxGui") then
+		NAProtection(sGui)
+		sGui.Parent = cGUI:FindFirstChild("RobloxGui")
+		return sGui
+	elseif cGUI then
+		NAProtection(sGui)
+		sGui.Parent = cGUI;
+		return sGui
+	elseif lPlr and lPlr:FindFirstChildWhichIsA("PlayerGui") then
+		NAProtection(sGui)
+		sGui.Parent = lPlr:FindFirstChildWhichIsA("PlayerGui")
+		sGui.ResetOnSpawn = false;
+		return sGui
+	else
+		return nil
+	end
+end;
 function mOut(txt, typeLol)
 	if typeLol == 1 then
 		task.spawn(function()
@@ -56,47 +96,6 @@ local SilentCMD = Instance.new("TextBox")
 local UICorner_4 = Instance.new("UICorner")
 local SilentC = Instance.new("TextButton")
 local UICorner_5 = Instance.new("UICorner")
-local function protectUI(sGui)
-	if sGui:IsA("ScreenGui") then
-		sGui.ZIndexBehavior = Enum.ZIndexBehavior.Global;
-		sGui.DisplayOrder = 999999999;
-		sGui.ResetOnSpawn = false;
-		sGui.IgnoreGuiInset = true
-	end;
-	local cGUI = ClonedService("CoreGui")
-	local lPlr = ClonedService("Players").LocalPlayer;
-	local function NAProtection(inst, var)
-		if inst then
-			if var then
-				inst[var] = "\0"
-				inst.Archivable = false
-			else
-				inst.Name = "\0"
-				inst.Archivable = false
-			end
-		end
-	end;
-	if gethui then
-		NAProtection(sGui)
-		sGui.Parent = gethui()
-		return sGui
-	elseif cGUI and cGUI:FindFirstChild("RobloxGui") then
-		NAProtection(sGui)
-		sGui.Parent = cGUI:FindFirstChild("RobloxGui")
-		return sGui
-	elseif cGUI then
-		NAProtection(sGui)
-		sGui.Parent = cGUI;
-		return sGui
-	elseif lPlr and lPlr:FindFirstChildWhichIsA("PlayerGui") then
-		NAProtection(sGui)
-		sGui.Parent = lPlr:FindFirstChildWhichIsA("PlayerGui")
-		sGui.ResetOnSpawn = false;
-		return sGui
-	else
-		return nil
-	end
-end;
 protectUI(ScreenGui)
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
 ScreenGui.ResetOnSpawn = false;
@@ -399,3 +398,4 @@ SilentC.MouseButton1Click:Connect(function()
 		end
 	end
 end)
+
