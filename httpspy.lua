@@ -197,20 +197,31 @@ HttpPost = hookfunction(game.HttpPost, function(self, url, ...)
 	Log("HTTP POST", url)
 	return HttpPost(self, url, ...)
 end)
-local RequestLog;
+local SynDotRequestHook, HttpDotRequestHook, RequestLog, HttpUnderscoreRequestLog;
 if syn and syn.request then
-	RequestLog = hookfunction(syn.request, function(dat)
+	SynDotRequestHook = hookfunction(syn.request, function(dat)
 		Log(dat.Method or "REQUEST", dat.Url, dat.Headers)
-		return RequestLog(dat)
+		return SynDotRequestHook(dat)
 	end)
-elseif request then
+end
+if http and http.request then
+	HttpDotRequestHook = hookfunction(http.request, function(dat)
+		Log(dat.Method or "REQUEST", dat.Url, dat.Headers)
+		return HttpDotRequestHook(dat)
+	end)
+end;
+if request then
 	RequestLog = hookfunction(request, function(dat)
 		Log(dat.Method or "REQUEST", dat.Url, dat.Headers)
 		return RequestLog(dat)
 	end)
-else
-	Log("WARNING", "Your exploit is not supported!")
-end;
+end
+if http_request then
+	HttpUnderscoreRequestLog = hookfunction(request, function(dat)
+		Log(dat.Method or "REQUEST", dat.Url, dat.Headers)
+		return HttpUnderscoreRequestLog(dat)
+	end)
+end
 local minimized = false;
 local origSize = Background.Size;
 Minimize.MouseButton1Click:Connect(function()
