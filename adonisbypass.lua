@@ -2,7 +2,7 @@ for i, v in pairs((getgc and getgc(true) or getreg and getreg() or function()
 	return {}
 end)) do
 	pcall(function()
-		if (typeof or type)(v) == table then
+		if (typeof or type)(v) == "table" then
 			pcall(function()
 				if rawget(v, "Detected") then
 					pcall(function()
@@ -23,3 +23,4 @@ end)) do
 		end
 	end)
 end
+
